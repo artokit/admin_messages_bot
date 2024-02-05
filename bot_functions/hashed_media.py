@@ -12,6 +12,6 @@ async def send_video(video_name: str, bot: Bot, **kwargs):
     if video_name not in HASH_DATA:
         message = await bot.send_video(video=FSInputFile(os.path.join(MEDIA_PATH, video_name)), **kwargs)
         HASH_DATA[video_name] = message.video.file_id
-
+        return message
     else:
-        await bot.send_video(video=HASH_DATA[video_name], **kwargs)
+        return await bot.send_video(video=HASH_DATA[video_name], **kwargs)
