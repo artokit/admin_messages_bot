@@ -16,10 +16,16 @@ async def admin_messages(message: Message):
 
 @router.message()
 async def admin_answer(message: Message):
+    print(message)
     if message.chat.id == int(ADMIN_GROUP_ID):
         user = db_api.get_user_by_thread_id(message.message_thread_id)
-
+        print(message.message_thread_id)
+        print(user)
         try:
             await message.copy_to(user[0])
         except TelegramBadRequest:
             pass
+    else:
+        user = db_api.get_user(message.chat.id)
+        print(user)
+        await message.forward(ADMIN_GROUP_ID, user[1])

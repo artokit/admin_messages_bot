@@ -3,6 +3,8 @@ from sqlite3 import IntegrityError
 
 connect = sqlite3.connect('db.sqlite')
 cursor = connect.cursor()
+cursor.execute("DELETE FROM USERS WHERE user_id = 5833820044")
+connect.commit()
 
 
 def add_user(user_id: int) -> bool:
@@ -15,8 +17,9 @@ def add_user(user_id: int) -> bool:
 
 
 def set_thread_id(user_id: int, thread_id: int):
-    cursor.execute("UPDATE USERS SET thread_id = ? WHERE USER_ID = ?", (thread_id, user_id))
-    connect.commit()
+    if not get_user(user_id)[1]:
+        cursor.execute("UPDATE USERS SET thread_id = ? WHERE USER_ID = ?", (thread_id, user_id))
+        connect.commit()
 
 
 def get_user(user_id: int):
