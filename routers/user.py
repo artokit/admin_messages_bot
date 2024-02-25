@@ -13,6 +13,12 @@ CHAT_ID = -1002135411554
 
 router = Router()
 
+async def create_forum_topic(user_id: int, bot: Bot, name: str):
+    user = db_api.get_user(user_id)
+    if user:
+        if not user[1]:
+            m = await bot.create_forum_topic(ADMIN_GROUP_ID, name)
+            db_api.set_thread_id(user_id, m.message_thread_id)
 
 @router.message(Command('start'))
 async def start(message: Message, state: FSMContext):
@@ -20,8 +26,9 @@ async def start(message: Message, state: FSMContext):
         await state.set_state(AdminHelp.message_to_admin)
         return
     
-    m = await message.bot.create_forum_topic(ADMIN_GROUP_ID, message.chat.username or str(message.chat.id))
-    db_api.set_thread_id(message.chat.id, m.message_thread_id)
+    await create_forum_topic(message.chat.id, message.bot, message.chat.username or str(message.chat.id))
+    # m = await message.bot.create_forum_topic(ADMIN_GROUP_ID, message.chat.username or str(message.chat.id))
+    # db_api.set_thread_id(message.chat.id, m.message_thread_id)
 
     await asyncio.sleep(5)
     await message.bot.send_chat_action(message.chat.id, action="typing")
@@ -101,7 +108,7 @@ async def answer_to_join(message: Message, state: FSMContext):
         message.bot,
         chat_id=message.chat.id,
         caption="🔥 Aquí es donde vamos a ganar dinero, ahora registrar una nueva cuenta en este sitio :"
-                " https://1wowei.xyz/casino/list?open=register#r53b .\n"
+                " https://1wcdcw.xyz/casino/list?open=register#r53b .\n"
                 "Asegúrate de tener una cuenta nueva, ya que mis señales sólo funcionan con cuentas nuevas a través "
                 "de mi enlace\n"
                 "Después de eso envíame un correo electrónico e iremos al siguiente paso, ¿puedes hacerlo ahora?"
@@ -138,8 +145,9 @@ async def answer_to_join(message: Message, state: FSMContext):
     msg = await message.answer("Si necesitas ayuda - He adjuntado una guía de vídeo sobre cómo sign up.🤓")
     await msg.forward(ADMIN_GROUP_ID, user[1])
 
-    m = await message.bot.create_forum_topic(ADMIN_GROUP_ID, message.chat.username or str(message.chat.id))
-    db_api.set_thread_id(message.chat.id, m.message_thread_id)
+    await create_forum_topic(message.chat.id, message.bot, message.chat.username or str(message.chat.id))
+    # m = await message.bot.create_forum_topic(ADMIN_GROUP_ID, message.chat.username or str(message.chat.id))
+    # db_api.set_thread_id(message.chat.id, m.message_thread_id)
     await state.clear()
 
 
@@ -155,7 +163,7 @@ async def answer_to_join_id(user_id: int, bot: Bot, state: FSMContext, username:
         bot,
         chat_id=user_id,
         caption="🔥 Aquí es donde vamos a ganar dinero, ahora registrar una nueva cuenta en este sitio :"
-                " https://1wauah.xyz/casino/list?open=register#r53b .\n"
+                " https://1wcdcw.xyz/casino/list?open=register#r53b .\n"
                 "Asegúrate de tener una cuenta nueva, ya que mis señales sólo funcionan con cuentas nuevas a través "
                 "de mi enlace\n"
                 "Después de eso envíame un correo electrónico e iremos al siguiente paso, ¿puedes hacerlo ahora?"
@@ -164,7 +172,10 @@ async def answer_to_join_id(user_id: int, bot: Bot, state: FSMContext, username:
 
     await bot.send_chat_action(user_id, action="typing")
     await asyncio.sleep(5)
-    msg = await bot.send_message(user_id, "💰Código promocional: AVIAOTRAXEL")
+    # msg = await bot.send_message("
+    # msg = await bot.send_message("
+    # msg = await bot.send_message("
+    msg = await bot.send_message(user_id, "💰Código promocional: AVIATORAXEL")
     await msg.forward(ADMIN_GROUP_ID, user[1])
 
     await bot.send_chat_action(user_id, action="typing")
@@ -203,14 +214,15 @@ async def start1(update: ChatJoinRequest):
         await state.set_state(AdminHelp.message_to_admin)
         return
 
-    m = await update.bot.create_forum_topic(ADMIN_GROUP_ID, update.from_user.username or str(update.from_user.id))
-    db_api.set_thread_id(update.from_user.id, m.message_thread_id)
+    await create_forum_topic(update.from_user.id, update.bot, update.from_user.username or str(update.from_user.id))
+    # m = await update.bot.create_forum_topic(ADMIN_GROUP_ID, update.from_user.username or str(update.from_user.id))
+    # db_api.set_thread_id(update.from_user.id, m.message_thread_id)
 
     # db_api.add_user(update.chat.id)
     # global storage
     # m = await update.bot.create_forum_topic(ADMIN_GROUP_ID, update.chat.username or str(update.from_user.id))
-    print(m.message_thread_id)
-    db_api.set_thread_id(update.from_user.id, m.message_thread_id)
+    # print(m.message_thread_id)
+    # db_api.set_thread_id(update.from_user.id, m.message_thread_id)
 
     # await asyncio.sleep(60)
     await update.approve()
@@ -259,4 +271,5 @@ async def test_chat_member(chat_member_updated: ChatMemberUpdated):
         )
 
         await chat_member_updated.bot.send_message(ADMIN_GROUP_ID, "ВЫШЕЛ ИЗ КАНАЛА!", message_thread_id=user[1])
+
 
